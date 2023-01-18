@@ -42,6 +42,44 @@ public class BSTree <T extends Comparable<T>> {
         }
         return false;
     }
+    public void remove(T data){
+        BSTNode<T> currentRoot = root;
+        BSTNode<T> parentRoot;
+        if(!exists(data)) return;
+        while(currentRoot !=null){
+            if(data.compareTo(currentRoot.getData()) == 0) {
+                BSTNode<T> replaceRoot = findLargest(currentRoot);
+                if(replaceRoot != null){
+                    
+                }else{
+
+                }
+            }
+            else if(data.compareTo(currentRoot.getData())<0) currentRoot = currentRoot.getLeft();
+            else currentRoot = currentRoot.getRight();
+
+        }
+    }
+    public BSTNode<T> findParentRoot(T data){
+        BSTNode<T> parentRoot = null;
+        BSTNode<T> currentRoot = root;
+        while(data.compareTo(currentRoot.getData()) == 0){
+            parentRoot = currentRoot;
+            if(data.compareTo(currentRoot.getData())<0) currentRoot = currentRoot.getLeft();
+            else currentRoot = currentRoot.getRight();
+        }
+        return parentRoot;
+    }
+    public BSTNode<T> findLargest(BSTNode<T> root){
+        BSTNode<T> currentRoot = root.getLeft();
+        BSTNode<T> parentRoot = null;
+        while(currentRoot.getLeft() != null && currentRoot.getRight() != null){
+            parentRoot = currentRoot;
+            currentRoot = currentRoot.getRight();
+        }
+        parentRoot.setRight(null);
+        return currentRoot;
+    }
     public void printInOrderRecur(BSTNode<T> node) {
         if(node == null) return;
         printInOrderRecur(node.getLeft());
