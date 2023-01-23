@@ -45,48 +45,85 @@ public class BSTree <T extends Comparable<T>> {
     public void remove(T data){
         BSTNode<T> currentRoot = root;
         BSTNode<T> parentRoot;
+        int parentLorR = 0; //0 = no parent, 1 = left, 2 = right
         if(!exists(data)) return;
         while(currentRoot !=null){
+            parentRoot = currentRoot;
             if(data.compareTo(currentRoot.getData()) == 0) {
                 BSTNode<T> replaceRoot = replace(currentRoot);
-                if(replaceRoot != null){
-                    currentRoot.setData(replaceRoot.getData());
-                    
-                }else{
+                if(isLeafNode(currentRoot)){
+                    if(parentLorR == 1){
+                        parentRoot.setLeft(null);
+                    }else{
+                        parentRoot.setRight(null);
+                    }
+                    return;
+                }//when is leaf node
+                else if(replaceRoot == null){
+                    if(parentLorR == 1){
+                        parentRoot.setLeft(currentRoot.getRight());
+                    }else{
+                        parentRoot.setRight(currentRoot.getRight());
+                    }
+                } // when the node doesn't have left child node
+                else{
 
-                }
+                }//delete node and replace it 
+
             }
-            else if(data.compareTo(currentRoot.getData())<0) currentRoot = currentRoot.getLeft();
-            else currentRoot = currentRoot.getRight();
+            else if(data.compareTo(currentRoot.getData())<0) {
+                currentRoot = currentRoot.getLeft();
+                parentLorR = 1;
+            }
+            else {
+                currentRoot = currentRoot.getRight();
+                parentLorR = 2;
+            }
 
         }
     }
-    public BSTNode<T> findParentRoot(T data){
-        BSTNode<T> parentRoot = null;
-        BSTNode<T> currentRoot = root;
-        while(data.compareTo(currentRoot.getData()) == 0){
-            parentRoot = currentRoot;
-            if(data.compareTo(currentRoot.getData())<0) currentRoot = currentRoot.getLeft();
-            else currentRoot = currentRoot.getRight();
-        }
-        return parentRoot;
-    }
+
+//    public BSTNode<T> findParentRoot(T data){
+//        BSTNode<T> parentRoot = null;
+//        BSTNode<T> currentRoot = root;
+//        while(data.compareTo(currentRoot.getData()) == 0){
+//            parentRoot = currentRoot;
+//            if(data.compareTo(currentRoot.getData())<0) currentRoot = currentRoot.getLeft();
+//            else currentRoot = currentRoot.getRight();
+//        }
+//        return parentRoot;
+//    }
     public BSTNode<T> replace(BSTNode<T> root){
         BSTNode<T> currentRoot = root.getLeft();
         if(currentRoot.getData() == null){
              return null;
         }
-        BSTNode<T> parentRoot = null;
-        while(currentRoot.getLeft() != null && currentRoot.getRight() != null){
-            parentRoot = currentRoot;
+        if(currentRoot.getRight() == null){
+            return currentRoot;
+        }
+        while(currentRoot.getRight() != null){
             currentRoot = currentRoot.getRight();
         }
-        if(parentRoot == null){
-            root.setLeft(null);
-        }else{
-            parentRoot.setRight(null);
-        }
         return currentRoot;
+
+//        BSTNode<T> currentRoot = root.getLeft();
+//        if(currentRoot.getData() == null){
+//             return null;
+//        }
+//        BSTNode<T> parentRoot = null;
+//        while(currentRoot.getRight() != null){
+//            parentRoot = currentRoot;
+//            currentRoot = currentRoot.getRight();
+//        }
+//        if(parentRoot == null){
+//            root.setLeft(null);
+//        }else{
+//            parentRoot.setRight(null);
+//        }
+//        return currentRoot;
+    }
+    public boolean isLeafNode(BSTNode<T> node){
+        return node.getLeft() == null && node.getRight() == null;
     }
     public void printInOrderRecur(BSTNode<T> node) {
         if(node == null) return;
