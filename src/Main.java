@@ -17,9 +17,13 @@ public class Main {
         tree.add(22);
 
 
-        tree.printInOrder();
+//        tree.printInOrder();
+        tree.printInBinary();
         System.out.println(tree.exists(1));
         tree.remove(50);
-        tree.printInOrder();
+//        tree.printInOrder();
+        tree.printInBinary();
+        tree.balance();
+        tree.printInBinary();
     }
 }
