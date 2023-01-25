@@ -1,15 +1,18 @@
+import java.util.ArrayList;
+
 public class BSTree <T extends Comparable<T>> {
     private BSTNode<T> root;
 
     public BSTree(){
         root = null;
     }
-
+    T data;
     public void add(T data){
         if(root==null) root = new BSTNode<>(data);
         else addRecur(root,data);
 
     }
+
 
     private void addRecur(BSTNode<T> root, T data){
         //if the data is less than the root
@@ -41,6 +44,32 @@ public class BSTree <T extends Comparable<T>> {
             else currentRoot = currentRoot.getRight();
         }
         return false;
+    }
+    public void balance(){
+        balanceRecur(root);
+        BSTNode<T> mid = binarylist.get(binarylist.size()/2);
+        root = new BSTNode<>(mid.getData());
+
+        for(int place = binarylist.size()/2 - 2; place>=0; place-=2){
+            addRecur(root, binarylist.get(place).getData());
+        }
+        for(int place = binarylist.size()/2 - 1; place>=0; place-=2){
+            addRecur(root, binarylist.get(place).getData());
+        }
+        for(int place = binarylist.size()/2 +2; place < binarylist.size(); place +=2){
+            addRecur(root, binarylist.get(place).getData());
+        }
+        for(int place = binarylist.size()/2 +1; place < binarylist.size(); place +=2){
+            addRecur(root, binarylist.get(place).getData());
+        }
+    }
+    ArrayList<BSTNode<T>> binarylist = new ArrayList<>();
+    public void balanceRecur(BSTNode<T> node){
+        if(node == null) return;
+        balanceRecur(node.getLeft());
+        binarylist.add(node);
+        balanceRecur(node.getRight());
+
     }
     public void remove(T data){
         BSTNode<T> currentRoot = root;
@@ -109,31 +138,20 @@ public class BSTree <T extends Comparable<T>> {
         currentRoot.setLeft(null);
         return currentRoot;
 
-//        BSTNode<T> currentRoot = root.getLeft();
-//        if(currentRoot.getData() == null){
-//             return null;
-//        }
-//        BSTNode<T> parentRoot = null;
-//        while(currentRoot.getRight() != null){
-//            parentRoot = currentRoot;
-//            currentRoot = currentRoot.getRight();
-//        }
-//        if(parentRoot == null){
-//            root.setLeft(null);
-//        }else{
-//            parentRoot.setRight(null);
-//        }
-//        return currentRoot;
     }
     public boolean isLeafNode(BSTNode<T> node){
         return node.getLeft() == null && node.getRight() == null;
     }
     public void printInOrderRecur(BSTNode<T> node) {
         if(node == null) return;
-        System.out.println(traversePreOrder(node));
-//        printInOrderRecur(node.getLeft());
-//        System.out.print(node + ",");
-//        printInOrderRecur(node.getRight());
+        printInOrderRecur(node.getLeft());
+        System.out.print(node + ",");
+        printInOrderRecur(node.getRight());
+    }
+    public void printInBinary() {
+        if(root == null) return;
+        System.out.println(traversePreOrder(root));
+
     }
     public String traversePreOrder(BSTNode<T> root) {
 
