@@ -44,14 +44,15 @@ public class BSTree <T extends Comparable<T>> {
     }
     public void remove(T data){
         BSTNode<T> currentRoot = root;
-        BSTNode<T> parentRoot;
+        BSTNode<T> parentRoot = root;
         int parentLorR = 0; //0 = no parent, 1 = left, 2 = right
         if(!exists(data)) return;
         while(currentRoot !=null){
-            parentRoot = currentRoot;
+//            System.out.println(parentRoot.getData());
             if(data.compareTo(currentRoot.getData()) == 0) {
                 BSTNode<T> replaceRoot = replace(currentRoot);
                 if(isLeafNode(currentRoot)){
+//                    System.out.println(parentRoot.getData());
                     if(parentLorR == 1){
                         parentRoot.setLeft(null);
                     }else{
@@ -67,15 +68,19 @@ public class BSTree <T extends Comparable<T>> {
                     }
                 } // when the node doesn't have left child node
                 else{
-
-                }//delete node and replace it 
+                    currentRoot.setData(replaceRoot.getData());
+                }//delete node and replace it
 
             }
             else if(data.compareTo(currentRoot.getData())<0) {
+//                System.out.println("Left");
+                parentRoot = currentRoot;
                 currentRoot = currentRoot.getLeft();
                 parentLorR = 1;
             }
             else {
+//                System.out.println("Right");
+                parentRoot = currentRoot;
                 currentRoot = currentRoot.getRight();
                 parentLorR = 2;
             }
@@ -83,27 +88,25 @@ public class BSTree <T extends Comparable<T>> {
         }
     }
 
-//    public BSTNode<T> findParentRoot(T data){
-//        BSTNode<T> parentRoot = null;
-//        BSTNode<T> currentRoot = root;
-//        while(data.compareTo(currentRoot.getData()) == 0){
-//            parentRoot = currentRoot;
-//            if(data.compareTo(currentRoot.getData())<0) currentRoot = currentRoot.getLeft();
-//            else currentRoot = currentRoot.getRight();
-//        }
-//        return parentRoot;
-//    }
     public BSTNode<T> replace(BSTNode<T> root){
         BSTNode<T> currentRoot = root.getLeft();
-        if(currentRoot.getData() == null){
-             return null;
+        BSTNode<T> parentRoot = root;
+        if(currentRoot == null){
+            return null;
         }
-        if(currentRoot.getRight() == null){
-            return currentRoot;
-        }
+//        if(currentRoot.getRight() == null){
+//            return currentRoot;
+//        }
         while(currentRoot.getRight() != null){
+            parentRoot = currentRoot;
             currentRoot = currentRoot.getRight();
         }
+        if(parentRoot.getLeft() == currentRoot){
+            parentRoot.setLeft(currentRoot.getLeft());
+        }else if(parentRoot.getRight() == currentRoot){
+            parentRoot.setRight(currentRoot.getLeft());
+        }
+        currentRoot.setLeft(null);
         return currentRoot;
 
 //        BSTNode<T> currentRoot = root.getLeft();
@@ -127,8 +130,49 @@ public class BSTree <T extends Comparable<T>> {
     }
     public void printInOrderRecur(BSTNode<T> node) {
         if(node == null) return;
-        printInOrderRecur(node.getLeft());
-        System.out.print(node + ",");
-        printInOrderRecur(node.getRight());
+        System.out.println(traversePreOrder(node));
+//        printInOrderRecur(node.getLeft());
+//        System.out.print(node + ",");
+//        printInOrderRecur(node.getRight());
+    }
+    public String traversePreOrder(BSTNode<T> root) {
+
+        if (root == null) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(root.getData());
+
+        String pointerRight = "└──";
+        String pointerLeft = (root.getRight() != null) ? "├──" : "└──";
+
+        traverseNodes(sb, "", pointerLeft, root.getLeft(), root.getRight() != null);
+        traverseNodes(sb, "", pointerRight, root.getRight(), false);
+
+        return sb.toString();
+    }
+    public void traverseNodes(StringBuilder sb, String padding, String pointer, BSTNode<T> node,
+                              boolean hasRightSibling) {
+        if (node != null) {
+            sb.append("\n");
+            sb.append(padding);
+            sb.append(pointer);
+            sb.append(node.getData().toString());
+
+            StringBuilder paddingBuilder = new StringBuilder(padding);
+            if (hasRightSibling) {
+                paddingBuilder.append("│  ");
+            } else {
+                paddingBuilder.append("   ");
+            }
+
+            String paddingForBoth = paddingBuilder.toString();
+            String pointerRight = "└──";
+            String pointerLeft = (node.getRight() != null) ? "├──" : "└──";
+
+            traverseNodes(sb, paddingForBoth, pointerLeft, node.getLeft(), node.getRight() != null);
+            traverseNodes(sb, paddingForBoth, pointerRight, node.getRight(), false);
+        }
     }
 }
